@@ -14,6 +14,7 @@ public:
 
     turnBlock();
     turnBlock(int x);
+    turnBlock(Vector2 points[91], int spread, int filetype);
     void drawBlock() override;
     void scaleBlock() override;
     int getBlockType() override;

@@ -8,6 +8,7 @@ public:
     float radius;
     pillarBlock();
     pillarBlock(int x);
+    pillarBlock(float posX, float posY, float rad, int fileType);
     void drawBlock() override;
     void scaleBlock() override;
     int getBlockType() override;

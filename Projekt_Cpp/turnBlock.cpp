@@ -4,75 +4,7 @@
 #include <iostream>
 #include "raymath.h"
 using namespace std;
-turnBlock::turnBlock()
-{
-
-	this->posX = GetMouseX();
-	this->posY = GetMouseY();
-	this->radius = 100;
-	this->rotation = 180;
-	float sq2 = sqrt(2.0f);
-	this->A = { 0,0 };
-	this->B = { 0,0 };
-	this->C = { 0,0 };
-	this->circleOrigin = { 0, 0};
-	this->spread = 45.0f;
-	this->points.resize(91);
-	this->inFileType = 2;
-	while (!WindowShouldClose()) {
-		BeginDrawing();
-		for (Blocks* klocek : klocki) {
-			klocek->drawBlock();
-		}
-		
-		this->posX = GetMouseX();
-		this->posY = GetMouseY();
-		
-		if (IsKeyDown(KEY_A) && this->spread > 4) this->spread -= 3;
-		if (IsKeyDown(KEY_D) && this->spread < 45) this->spread += 3;
-		if (IsKeyDown(KEY_W) && this->radius > 10) this->radius += 5;
-		if (IsKeyDown(KEY_S)) this->radius -= 5;
-		if (IsKeyDown(KEY_Q)) this->rotation--;
-		if (IsKeyDown(KEY_E)) this->rotation++;
-		
-
-		this->circleOrigin.x = this->posX - cos(DEG2RAD * this->rotation) * this->radius;
-		this->circleOrigin.y = this->posY - sin(DEG2RAD * this->rotation) * this->radius;
-		for (int i = 0; i < spread * 2 + 1; i++) {
-			this->points[i].x = this->circleOrigin.x + cos(DEG2RAD * (this->rotation - this->spread + i)) * this->radius;
-			this->points[i].y = this->circleOrigin.y + sin(DEG2RAD * (this->rotation - this->spread + i)) * this->radius;
-		}
-		for (int i = 0; i < this->spread * 2 ; i++) {
-			DrawLineEx(this->points[i], this->points[i + 1], 16, WHITE);
-			
-		}
-		
-		
-		
-		
-
-		this->A.x = this->circleOrigin.x + cos(DEG2RAD * (this->rotation + this->spread)) * this->radius;
-		this->A.y = this->circleOrigin.y + sin(DEG2RAD * (this->rotation + this->spread)) * this->radius;
-
-		this->B.x = this->circleOrigin.x + cos(DEG2RAD * (this->rotation)) * sq2 * this->radius;
-		this->B.y = this->circleOrigin.y + sin(DEG2RAD * (this->rotation)) * sq2 * this->radius;
-
-		this->C.x = this->circleOrigin.x + cos(DEG2RAD * (this->rotation - this->spread)) * this->radius;
-		this->C.y = this->circleOrigin.y + sin(DEG2RAD * (this->rotation - this->spread)) * this->radius;
-		
-		
-		ClearBackground({ backgroundColor });
-		EndDrawing();
-		if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
-			
-			break;
-		}
-
-		
-	}
-	
-	
-
+turnBlock::turnBlock(){
 
 }
 
@@ -80,6 +12,17 @@ turnBlock::turnBlock(int x)
 {
 
 }
+
+turnBlock::turnBlock(Vector2 points[91], int spread, int filetype)
+{
+	this->points.resize(91);
+	for (int i = 0; i < 91; i++) {
+		this->points[i] = points[i];
+	}
+	this->spread = spread;
+	this->inFileType = filetype;
+}
+
 
 void turnBlock::drawBlock()
 {

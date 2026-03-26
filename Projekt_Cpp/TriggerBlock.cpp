@@ -4,54 +4,21 @@
 #include "raymath.h"
 
 TriggerBlock::TriggerBlock() {
-    this->posX = GetMouseX();
-    this->posY = GetMouseY();
-    this->width = 100;
-    this->height = 100;
-    this->type = 1; 
-    this->inFileType = 3;
-    while (!WindowShouldClose()) {
-        this->posX = GetMouseX();
-        this->posY = GetMouseY();
-
-   
-        if (IsKeyDown(KEY_W)) this->height += 2;
-        if (IsKeyDown(KEY_S) && this->height > 10) this->height -= 2;
-        if (IsKeyDown(KEY_D)) this->width += 2;
-        if (IsKeyDown(KEY_A) && this->width > 10) this->width -= 2;
-
-        if (IsKeyPressed(KEY_ONE)) this->type = 1;
-        
-        if (IsKeyPressed(KEY_TWO)) this->type = 2;
-
-        if (IsKeyPressed(KEY_THREE)) this->type = 3;
-
-
-        BeginDrawing();
-        ClearBackground({ backgroundColor});
-
-        for (Blocks* klocek : klocki) {
-            klocek->drawBlock();
-        }
-
-        Color c = WHITE;
-        if (this->type == 1) c = GREEN;
-        if (this->type == 2) c = BLUE;
-        if (this->type == 3) c = RED;
-
-        DrawRectangle(this->posX - width / 2, this->posY - height / 2, width, height, c);
-        DrawText(TextFormat("TYP: %d (1-Start, 2-Check, 3-Meta)", this->type), 10, 10, 20, WHITE);
-
-        EndDrawing();
-
-        if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
-            break;
-        }
-    }
 }
 
 TriggerBlock::TriggerBlock(int x)
 {
+}
+
+TriggerBlock::TriggerBlock(float posX, float posY, float width, float height, int type, int fileType)
+{
+    this->posX = posX;
+    this->posY = posY;
+    this->width = width;
+    this->height = height;
+    this->type = type;
+    this->inFileType = fileType;
+
 }
 
 void TriggerBlock::drawBlock() {

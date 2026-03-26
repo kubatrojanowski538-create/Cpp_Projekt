@@ -1,36 +1,21 @@
 ﻿#include "pillarBlock.h"
 #include "globals.h"
 
-pillarBlock::pillarBlock()
-{
-	this->posX = GetMouseX();
-	this->posY = GetMouseY();
-	this->radius = 20;
-	this->inFileType = 1;
-
-	while (!WindowShouldClose()) {
-		this->posX = GetMouseX();
-		this->posY = GetMouseY();
-		if (IsKeyDown(KEY_W)) this->radius++;
-		if (IsKeyDown(KEY_S) && this->radius > 5) this->radius--;
-		BeginDrawing();
-		for (Blocks* klocek : klocki) {
-			klocek->drawBlock();
-
-		}
-		DrawCircle(this->posX, this->posY, this->radius, WHITE);
-		ClearBackground(backgroundColor);
-		EndDrawing();
-		if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
-			break;
-		}
-
-	}
+pillarBlock::pillarBlock(){
 
 }
 
 pillarBlock::pillarBlock(int x)
 {
+
+}
+
+pillarBlock::pillarBlock(float posX, float posY, float rad, int fileType)
+{
+	this->posX = posX;
+	this->posY = posY;
+	this->radius = rad;
+	this->inFileType = fileType;
 
 }
 

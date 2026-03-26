@@ -10,6 +10,7 @@ public:
 
     TriggerBlock(); 
     TriggerBlock(int x);
+    TriggerBlock(float posX, float posY, float width, float height, int type, int fileType);
     void drawBlock() override;
     void scaleBlock() override;
     bool checkCollision(Vector2 point) override;

@@ -12,6 +12,7 @@ public:
     
     BarrierLine();
     BarrierLine(int x);
+    BarrierLine(float len, float rot,float posX, float posY, Vector2 start, Vector2 end, int fileType );
     void drawBlock() override;
     void scaleBlock() override;
     int getBlockType() override;

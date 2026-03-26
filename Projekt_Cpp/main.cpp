@@ -39,22 +39,21 @@ int main() {
         DrawText("1: Linia, 2: Zakret, 3: Filar, 4: START/META/CHECK, O: Zapisz ten tor do pliku, U: Wczytaj tor z pliku", 10, 10, 20, WHITE);
         DrawText("L: Jazda", 10, 40, 20, WHITE);
         EndDrawing();
-
+        
         if (IsKeyPressed(KEY_ONE)) {
-            BarrierLine* nowaLinia = new BarrierLine();
-            klocki.push_back(nowaLinia);
+            klocki.push_back(SetupBlock(1));
         }
         if (IsKeyPressed(KEY_TWO)) {
-            turnBlock* nowaLinia = new turnBlock();
-            klocki.push_back(nowaLinia);
+            ;
+            klocki.push_back(SetupBlock(3));
         }
         if (IsKeyPressed(KEY_THREE)) {
-            pillarBlock* nowyPilar = new pillarBlock();
-            klocki.push_back(nowyPilar);
+            
+            klocki.push_back(SetupBlock(2));
         }
         if (IsKeyPressed(KEY_FOUR)) {
-            TriggerBlock* nowyTrigger = new TriggerBlock();
-            klocki.push_back(nowyTrigger);
+            
+            klocki.push_back(SetupBlock(4));
         }
         if (IsKeyPressed(KEY_O)) {
             string NazwaPliku = GetText();

@@ -6,56 +6,24 @@
 #include "raymath.h"
 using namespace std;
 
-BarrierLine::BarrierLine() {
-
-	float startX, endX, startY, endY;
-	this->length = 100;
-	this->start = {0,0};
-	this->end = { 0,0 };
-	this->rotation = 0;
-	this->inFileType = 0;
-	
-	while (!WindowShouldClose()) {
-		BeginDrawing();
-		ClearBackground({ backgroundColor });
-
-		DrawLineEx(this->start, this->end, 16, WHITE);
-		for (Blocks* klocek : klocki) {
-			klocek->drawBlock();
-		}
-		
-		this->posX = float(GetMouseX());
-		this->posY = float(GetMouseY());
-
-		if (IsKeyDown(KEY_A)) this->rotation -= 3;
-		if (IsKeyDown(KEY_D)) this->rotation += 3;
-		if (IsKeyDown(KEY_W)) this->length += 5;
-		if (IsKeyDown(KEY_S) && this->length > 10) this->length -= 5;
-
-		startX = this->posX - cos(DEG2RAD * this->rotation) * this->length / 2;
-		endX = this->posX + cos(DEG2RAD * this->rotation) * this->length / 2;
-		startY = this->posY - sin(DEG2RAD * this->rotation) * this->length / 2;
-		endY = this->posY + sin(DEG2RAD * this->rotation) * this->length / 2;
-		this->start = { startX, startY };
-		this->end = { endX, endY };
-
-		
-
-
-		EndDrawing();
-		if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
-			break;
-		}
-		
-		
-	}
-	
-	
+BarrierLine::BarrierLine() {	
 
 }
 
 BarrierLine::BarrierLine(int x)
 {
+
+}
+
+BarrierLine::BarrierLine(float len, float rot, float posX, float posY, Vector2 start, Vector2 end, int fileType)
+{
+	this->length = len;
+	this->rotation = rot;
+	this->posX = posX;
+	this->posY = posY;
+	this->start = start;
+	this->end = end;
+	this->inFileType = fileType;
 
 }
 
