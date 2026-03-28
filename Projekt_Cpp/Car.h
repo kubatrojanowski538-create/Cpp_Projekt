@@ -1,6 +1,7 @@
 #pragma once
 #include "Drawable.h"
 #include "raylib.h"
+#include "Util.h"
 
 class Car :
     public Drawable
@@ -17,9 +18,11 @@ public:
 public:
     void drawCar();
     void resetCar();
-    void updateSpeed();
+    void updateSpeedRot(Controls inputs);
     void updatePosition();
-    void rotateCar();
+    void updateCar(Controls inputs);
+    void checkCollision();
+
     Car();
     
 

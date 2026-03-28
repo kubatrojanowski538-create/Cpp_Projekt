@@ -158,6 +158,18 @@ Blocks* SetupBlock(int type) {
 	
 }
 
+Controls GetInputs()
+{
+	Controls inputs{};
+
+	inputs.accelerate = IsKeyDown(KEY_W);
+	inputs.brake = IsKeyDown(KEY_S);
+	inputs.steerLeft = IsKeyDown(KEY_A);
+	inputs.steerRight = IsKeyDown(KEY_D);
+
+	return inputs;
+}
+
 std::ostream& operator<<(std::ostream& out, Vector2 Vec)
 {
 	return out << Vec.x << " " << Vec.y << " ";

@@ -141,7 +141,9 @@ int main() {
             klocek->drawBlock();
         }
 
+        Controls inputs = GetInputs();
         
+        autko.updateCar(inputs);
         autko.drawCar();
 
         if (gameFinished) {
@@ -154,15 +156,7 @@ int main() {
         else {
             DrawText(TextFormat("Czas: %.2f", gameTime), 20, 20, 40, WHITE);
         }
-        /////////////////////
         
-        
-        
-        
-
-
-
-        /////////////////////
         ClearBackground(backgroundColor);
 
         EndDrawing();
