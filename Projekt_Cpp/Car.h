@@ -14,6 +14,7 @@ public:
         Rectangle carRect;
         Image image;
         Texture carTexture;
+        Vector2 Rays[20];
 
 public:
     void drawCar();
@@ -22,7 +23,7 @@ public:
     void updatePosition();
     void updateCar(Controls inputs);
     void checkCollision();
-
+    void UpdateRays();
     Car();
     
 

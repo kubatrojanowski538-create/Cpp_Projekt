@@ -170,6 +170,42 @@ Controls GetInputs()
 	return inputs;
 }
 
+Vector2 NormalizeVector2(Vector2 vec)
+{
+	float len = sqrt(pow(vec.x, 2 ) + pow(vec.y, 2));
+
+	return {vec.x / len, vec.y / len};
+}
+
+
+
+
+float cross(Vector2 a, Vector2 b) {
+	return a.x * b.y - a.y * b.x;
+}
+
+float RayDistance2D(Vector2 P, Vector2 D, Vector2 A, Vector2 B, float& outDist) {
+	Vector2 r = D;
+	Vector2 s = { B.x - A.x, B.y - A.y };
+
+	float rxs = cross(r, s);
+	if (fabs(rxs) < 0.0001f) return false; 
+
+	Vector2 AP = { A.x - P.x, A.y - P.y };
+
+	float t = cross(AP, s) / rxs;
+	float u = cross(AP, r) / rxs;
+
+
+	
+	if (t >= 0 && u >= 0 && u <= 1) {
+		outDist = t;
+		return true;
+	}
+
+	return false;
+}
+
 std::ostream& operator<<(std::ostream& out, Vector2 Vec)
 {
 	return out << Vec.x << " " << Vec.y << " ";

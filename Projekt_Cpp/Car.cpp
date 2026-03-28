@@ -115,6 +115,7 @@ void Car::updateCar(Controls inputs)
     this->updateSpeedRot(inputs);
     this->updatePosition();
     this->checkCollision();
+    this->UpdateRays();
 
 }
 
@@ -169,4 +170,24 @@ void Car::checkCollision()
             }
         }
     }
+}
+
+void Car::UpdateRays()
+{
+    for (int i = 0; i < 13; i++) {
+        this->Rays[i] = {
+            cos((-60 + 10 * i + this->rotation) * DEG2RAD),
+            sin((-60 + 10 * i + this->rotation) * DEG2RAD)
+        };
+        
+    }
+    for (int i = 0; i < 7; i++) {
+        this->Rays[i + 13] = {
+            cos((100 + 30 * i + this->rotation) * DEG2RAD),
+            sin((100 + 30 * i + this->rotation) * DEG2RAD)
+        };
+        
+
+    }
+    
 }

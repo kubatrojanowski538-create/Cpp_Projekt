@@ -131,21 +131,26 @@ int main() {
 
     while (!WindowShouldClose()) {
 
+        //frametime
         if (timerRunning && !gameFinished) {
             gameTime += GetFrameTime();
         }
         
+        //drawblocks
         BeginDrawing();
-
         for (Blocks* klocek : klocki) {
             klocek->drawBlock();
         }
 
+
+        //car control
         Controls inputs = GetInputs();
-        
+       
         autko.updateCar(inputs);
         autko.drawCar();
+        
 
+        //timer
         if (gameFinished) {
             DrawText(TextFormat("Czas: %.2f s", gameTime), windowWidth / 2 - 80, windowHeight / 2 + 20, 40, WHITE);
 
