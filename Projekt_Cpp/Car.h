@@ -25,7 +25,7 @@ public:
     void checkCollision();
     void UpdateRays();
     Car();
-    
+    void VisualiseRays();
 
 
 

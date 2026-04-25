@@ -116,6 +116,7 @@ void Car::updateCar(Controls inputs)
     this->updatePosition();
     this->checkCollision();
     this->UpdateRays();
+	this->VisualiseRays();
 
 }
 
@@ -190,4 +191,88 @@ void Car::UpdateRays()
 
     }
     
+}
+
+void Car::VisualiseRays()
+{
+    // Punkt startu promieni w świecie gry.
+    // Używam posX/posY, bo kamera też jest centrowana na tej pozycji auta.
+    Vector2 rayStartWorld = { this->posX - this->image.width / 16, this->posY - this->image.height / 16 };
+    // Ten sam punkt przeliczony na ekran.
+    Vector2 rayStartScreen = {
+        rayStartWorld.x - camOffsetX,
+        rayStartWorld.y - camOffsetY
+    };
+
+    for (int i = 0; i < 20; i++)
+    {
+        Vector2 rayDir = Vector2Normalize(this->Rays[i]);
+
+        float closestDistance = maxRayDistance;
+
+        for (Blocks* klocek : klocki)
+        {
+            float distance = maxRayDistance;
+
+            if (BarrierLine* line = dynamic_cast<BarrierLine*>(klocek))
+            {
+                distance = RayDistance2D(
+                    rayStartWorld,
+                    rayDir,
+                    line->start,
+                    line->end
+                );
+            }
+            else if (pillarBlock* pillar = dynamic_cast<pillarBlock*>(klocek))
+            {
+                distance = RayDistance2DPillar(
+                    rayStartWorld,
+                    rayDir,
+                    pillar
+                );
+            }
+            else if (turnBlock* turn = dynamic_cast<turnBlock*>(klocek))
+            {
+                distance = RayDistance2DTurn(
+                    rayStartWorld,
+                    rayDir,
+                    turn
+                );
+            }
+            else if (TriggerBlock* trigger = dynamic_cast<TriggerBlock*>(klocek))
+            {
+                distance = RayDistance2DTrigger(
+                    rayStartWorld,
+                    rayDir,
+                    trigger
+                );
+            }
+
+            if (distance < closestDistance)
+            {
+                closestDistance = distance;
+            }
+        }
+
+        bool hitSomething = closestDistance < maxRayDistance;
+
+        float drawDistance = hitSomething ? closestDistance : maxRayDistance;
+
+        Vector2 rayEndWorld = {
+            rayStartWorld.x + rayDir.x * drawDistance,
+            rayStartWorld.y + rayDir.y * drawDistance
+        };
+
+        Vector2 rayEndScreen = {
+            rayEndWorld.x - camOffsetX,
+            rayEndWorld.y - camOffsetY
+        };
+
+        DrawLineEx(rayStartScreen, rayEndScreen, 2.0f, RED);
+
+        if (hitSomething)
+        {
+            DrawCircleV(rayEndScreen, 5.0f, RED);
+        }
+    }
 }
