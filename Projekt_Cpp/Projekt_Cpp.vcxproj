@@ -130,6 +130,7 @@
     <ClCompile Include="Blocks.cpp" />
     <ClCompile Include="Car.cpp" />
     <ClCompile Include="Drawable.cpp" />
+    <ClCompile Include="GameState.cpp" />
     <ClCompile Include="globals.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="pillarBlock.cpp" />
@@ -142,6 +143,7 @@
     <ClInclude Include="Blocks.h" />
     <ClInclude Include="Car.h" />
     <ClInclude Include="Drawable.h" />
+    <ClInclude Include="GameState.h" />
     <ClInclude Include="globals.h" />
     <ClInclude Include="pillarBlock.h" />
     <ClInclude Include="TriggerBlock.h" />

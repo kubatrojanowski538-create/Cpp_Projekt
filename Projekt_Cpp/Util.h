@@ -10,6 +10,8 @@
 #include "TriggerBlock.h"
 #include "math.h"
 
+class turnBlock;
+
 struct Controls
 {
 	float steerRight;
@@ -20,8 +22,8 @@ struct Controls
 struct GameState
 {
 	float speed;
-	float raydistances[20];
-	float raytypes[20];
+	float rayDistances[20];
+	float rayTypes[20];
 	Controls inputs;
 
 };
@@ -45,7 +47,6 @@ float RayDistance2DTrigger(Vector2 P, Vector2 D, TriggerBlock* trigger);
 float RayDistance2DTurn(Vector2 P, Vector2 D, turnBlock* turn);
 float cross(Vector2 a, Vector2 b);
 
-RayAndType GetClosestRay(Vector2 P, Vector2 D, std::vector<Blocks*> klocki);
 
 
 
