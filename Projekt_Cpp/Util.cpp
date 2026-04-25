@@ -184,12 +184,14 @@ float cross(Vector2 a, Vector2 b) {
 	return a.x * b.y - a.y * b.x;
 }
 
-float RayDistance2D(Vector2 P, Vector2 D, Vector2 A, Vector2 B, float& outDist) {
+
+
+float RayDistance2D(Vector2 P, Vector2 D, Vector2 A, Vector2 B) {
 	Vector2 r = D;
 	Vector2 s = { B.x - A.x, B.y - A.y };
 
 	float rxs = cross(r, s);
-	if (fabs(rxs) < 0.0001f) return false; 
+	if (fabs(rxs) < 0.0001f) return maxRayDistance; 
 
 	Vector2 AP = { A.x - P.x, A.y - P.y };
 
@@ -199,11 +201,103 @@ float RayDistance2D(Vector2 P, Vector2 D, Vector2 A, Vector2 B, float& outDist) 
 
 	
 	if (t >= 0 && u >= 0 && u <= 1) {
-		outDist = t;
-		return true;
+		
+		return t;
+		;
 	}
 
-	return false;
+	return maxRayDistance;
+}
+float RayDistance2DPillar(Vector2 P, Vector2 D, pillarBlock* pillar)
+{
+	Vector2 C = { pillar->posX, pillar->posY };
+	float R = pillar->radius;
+
+	Vector2 PC = { P.x - C.x, P.y - C.y };
+
+	float a = D.x * D.x + D.y * D.y;
+	if (fabs(a) < 0.0001f) return maxRayDistance;
+
+	float b = 2.0f * (PC.x * D.x + PC.y * D.y);
+	float c = PC.x * PC.x + PC.y * PC.y - R * R;
+
+	float delta = b * b - 4.0f * a * c;
+	if (delta < 0.0f) return maxRayDistance;
+
+	float sqrtDelta = sqrt(delta);
+
+	float t1 = (-b - sqrtDelta) / (2.0f * a);
+	float t2 = (-b + sqrtDelta) / (2.0f * a);
+
+	if (t1 >= 0.0f) return t1;
+	if (t2 >= 0.0f) return t2;
+
+	return maxRayDistance;
+}
+float RayDistance2DTrigger(Vector2 P, Vector2 D, TriggerBlock* trigger)
+{
+	float left = trigger->posX - trigger->width / 2.0f;
+	float right = trigger->posX + trigger->width / 2.0f;
+	float top = trigger->posY - trigger->height / 2.0f;
+	float bottom = trigger->posY + trigger->height / 2.0f;
+
+	float tMin = -maxRayDistance;
+	float tMax = maxRayDistance;
+
+	if (fabs(D.x) < 0.0001f) {
+		if (P.x < left || P.x > right) return maxRayDistance;
+	}
+	else {
+		float tx1 = (left - P.x) / D.x;
+		float tx2 = (right - P.x) / D.x;
+
+		if (tx1 > tx2) {
+			float tmp = tx1;
+			tx1 = tx2;
+			tx2 = tmp;
+		}
+
+		if (tx1 > tMin) tMin = tx1;
+		if (tx2 < tMax) tMax = tx2;
+	}
+
+	if (fabs(D.y) < 0.0001f) {
+		if (P.y < top || P.y > bottom) return maxRayDistance;
+	}
+	else {
+		float ty1 = (top - P.y) / D.y;
+		float ty2 = (bottom - P.y) / D.y;
+
+		if (ty1 > ty2) {
+			float tmp = ty1;
+			ty1 = ty2;
+			ty2 = tmp;
+		}
+
+		if (ty1 > tMin) tMin = ty1;
+		if (ty2 < tMax) tMax = ty2;
+	}
+
+	if (tMax < 0.0f) return maxRayDistance;
+	if (tMin > tMax) return maxRayDistance;
+
+	if (tMin < 0.0f) return 0.0f;
+
+	return tMin;
+}
+float RayDistance2DTurn(Vector2 P, Vector2 D, turnBlock* turn)
+{
+	float closest = maxRayDistance;
+
+	for (int i = 0; i < turn->spread * 2; i++) {
+		float dist = RayDistance2D(P, D, turn->points[i], turn->points[i + 1]);
+
+		if (dist < closest) {
+			closest = dist;
+		}
+	}
+
+	return closest;
 }
 
 std::ostream& operator<<(std::ostream& out, Vector2 Vec)

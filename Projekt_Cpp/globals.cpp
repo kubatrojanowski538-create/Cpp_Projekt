@@ -14,6 +14,7 @@ Vector2 respawnPoint = { 0, 0 };
 float gameTime = 0.0f;
 bool gameFinished = false;
 bool timerRunning = false;
+float maxRayDistance = 1000.0f;
 
 /*
 Line = 0

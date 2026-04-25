@@ -17,6 +17,19 @@ struct Controls
 	float accelerate;
 	float brake;
 };
+struct GameState
+{
+	float speed;
+	float raydistances[20];
+	float raytypes[20];
+	Controls inputs;
+
+};
+struct RayAndType
+{
+	float distance;
+	int type;
+};
 
 std::string GetText();
 std::ostream& operator<<(std::ostream& out, Vector2 Vec);
@@ -26,8 +39,13 @@ Controls GetInputs();
 Vector2 NormalizeVector2(Vector2 vec);
 
 
-float RayDistance2D(Vector2 P, Vector2 D, Vector2 A, Vector2 B, float& outDist);
+float RayDistance2D(Vector2 P, Vector2 D, Vector2 A, Vector2 B);
+float RayDistance2DPillar(Vector2 P, Vector2 D, pillarBlock* pillar);
+float RayDistance2DTrigger(Vector2 P, Vector2 D, TriggerBlock* trigger);
+float RayDistance2DTurn(Vector2 P, Vector2 D, turnBlock* turn);
 float cross(Vector2 a, Vector2 b);
+
+RayAndType GetClosestRay(Vector2 P, Vector2 D, std::vector<Blocks*> klocki);
 
 
 

@@ -17,3 +17,4 @@ extern Vector2 respawnPoint;
 extern float gameTime;       
 extern bool gameFinished;    
 extern bool timerRunning;    
+extern float maxRayDistance;
