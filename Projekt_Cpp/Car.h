@@ -15,6 +15,7 @@ public:
         Image image;
         Texture carTexture;
         Vector2 Rays[20];
+		GameState currentState;
 
 public:
     void drawCar();
@@ -26,6 +27,8 @@ public:
     void UpdateRays();
     Car();
     void VisualiseRays();
+    RayAndType GetClosestRayHit(Vector2 rayDirection);
+	void UpdateGameState(Controls inputs);
 
 
 

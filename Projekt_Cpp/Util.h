@@ -23,7 +23,7 @@ struct GameState
 {
 	float speed;
 	float rayDistances[20];
-	float rayTypes[20];
+	int rayTypes[20];
 	Controls inputs;
 
 };

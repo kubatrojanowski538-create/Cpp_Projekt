@@ -7,13 +7,15 @@ void SaveGameStateHeader(const std::string& fileName)
 {
 	std::ofstream file(fileName);
 
-	file << "car_speed,";
-	file << "accelerate,brake,steer_left,steer_right";
+	file << "car_speed";
 
 	for (int i = 0; i < 20; i++) {
 		file << ",ray_dist_" << i;
 		file << ",ray_type_" << i;
 	}
+	file << ",accelerate,brake,steer_left,steer_right";
+
+	
 
 	file << "\n";
 }
@@ -22,14 +24,9 @@ void AppendGameStateToFile(const GameState& state, const std::string& fileName)
 {
 	std::ofstream file(fileName, std::ios::app);
 
-	
-	
-	file << state.speed << ",";
+	file << state.speed;
 
-	file << state.inputs.accelerate << ",";
-	file << state.inputs.brake << ",";
-	file << state.inputs.steerLeft << ",";
-	file << state.inputs.steerRight;
+	
 
 	for (int i = 0; i < 20; i++) {
 		file << ",";
@@ -37,6 +34,11 @@ void AppendGameStateToFile(const GameState& state, const std::string& fileName)
 		file << ",";
 		file << state.rayTypes[i];
 	}
+	file << "," << state.inputs.accelerate;
+	file << "," << state.inputs.brake;
+	file << "," << state.inputs.steerLeft;
+	file << "," << state.inputs.steerRight;
 
 	file << "\n";
 }
+

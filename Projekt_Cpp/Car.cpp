@@ -115,8 +115,6 @@ void Car::updateCar(Controls inputs)
     this->updateSpeedRot(inputs);
     this->updatePosition();
     this->checkCollision();
-    this->UpdateRays();
-	this->VisualiseRays();
 
 }
 
@@ -275,4 +273,97 @@ void Car::VisualiseRays()
             DrawCircleV(rayEndScreen, 5.0f, RED);
         }
     }
+}
+
+
+RayAndType Car::GetClosestRayHit(Vector2 rayDirection)
+{
+
+
+    Vector2 rayStartWorld = { this->posX - this->image.width / 16, this->posY - this->image.height / 16 };
+
+
+    RayAndType result;
+    result.distance = maxRayDistance;
+    result.type = -1;
+
+    for (Blocks* klocek : klocki)
+    {
+        float distance = maxRayDistance;
+        int candidateType = -1;
+
+        if (BarrierLine* line = dynamic_cast<BarrierLine*>(klocek))
+        {
+            distance = RayDistance2D(
+                rayStartWorld,
+                rayDirection,
+                line->start,
+                line->end
+            );
+
+            candidateType = 0;
+        }
+        else if (pillarBlock* pillar = dynamic_cast<pillarBlock*>(klocek))
+        {
+            distance = RayDistance2DPillar(
+                rayStartWorld,
+                rayDirection,
+                pillar
+            );
+
+            candidateType = 0;
+        }
+        else if (turnBlock* turn = dynamic_cast<turnBlock*>(klocek))
+        {
+            distance = RayDistance2DTurn(
+                rayStartWorld,
+                rayDirection,
+                turn
+            );
+
+            candidateType = 0;
+        }
+        else if (TriggerBlock* trigger = dynamic_cast<TriggerBlock*>(klocek))
+        {
+
+            if (trigger->type == 3)
+            {
+                distance = RayDistance2DTrigger(
+                    rayStartWorld,
+                    rayDirection,
+                    trigger
+                );
+
+                candidateType = 1;
+            }
+            else
+            {
+                continue;
+            }
+        }
+
+        if (distance < result.distance)
+        {
+            result.distance = distance;
+            result.type = candidateType;
+        }
+    }
+
+    return result;
+}
+
+void Car::UpdateGameState(Controls inputs)
+{
+    this->UpdateRays();
+    this->currentState = {};
+    this->currentState.speed = this->speed;
+    for (int i = 0; i < 20; i++) {
+        RayAndType rayHit = GetClosestRayHit(this->Rays[i]);
+        this->currentState.rayDistances[i] = rayHit.distance;
+        this->currentState.rayTypes[i] = rayHit.type;
+
+    }
+    this->currentState.inputs = inputs;
+
+
 }

@@ -235,6 +235,9 @@ float RayDistance2DPillar(Vector2 P, Vector2 D, pillarBlock* pillar)
 }
 float RayDistance2DTrigger(Vector2 P, Vector2 D, TriggerBlock* trigger)
 {
+	if (trigger->type != 3) {
+		return maxRayDistance;
+	}
 	float left = trigger->posX - trigger->width / 2.0f;
 	float right = trigger->posX + trigger->width / 2.0f;
 	float top = trigger->posY - trigger->height / 2.0f;
