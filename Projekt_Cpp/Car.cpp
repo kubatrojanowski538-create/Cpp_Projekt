@@ -59,8 +59,8 @@ void Car::resetCar() {
 void Car::updateSpeedRot(Controls inputs) {
     //speed
     this->speed *= 0.995f;
-    if (inputs.accelerate && (this->speed < 20)) {
-        this->speed += 0.3f;
+    if (inputs.accelerate && (this->speed < 10)) {
+        this->speed += 0.1f;
         if (!timerRunning && !gameFinished) timerRunning = true; 
     }
     if (inputs.brake && (this->speed > -5)) {
@@ -68,24 +68,24 @@ void Car::updateSpeedRot(Controls inputs) {
     }
 
     if (this->speed < -5) this->speed = -5;
-    if (this->speed > 20) this->speed = 20;
+    if (this->speed > 10) this->speed = 10;
 
     this->velX = cos(this->rotation * DEG2RAD) * this->speed;
     this->velY = sin(this->rotation * DEG2RAD) * this->speed;
 
     //rot
     float turnSpeed = 0;
-    float maxTurn = 4.0f;
+    float maxTurn = 3.0f;
 
     if (abs(this->speed) < 0.5f) {
         turnSpeed = 0;
     }
-    else if (abs(this->speed) <= 10.0f) {
-        turnSpeed = (this->speed / 10.0f) * maxTurn;
+    else if (abs(this->speed) <= 5.0f) {
+        turnSpeed = (this->speed / 5.0f) * maxTurn;
     }
     else {
 
-        float factor = 1.0f - 0.5f * ((abs(this->speed) - 10.0f) / 10.0f);
+        float factor = 1.0f - 0.5f * ((abs(this->speed) - 5.0f) / 5.0f);
         turnSpeed = maxTurn * factor;
     }
 
