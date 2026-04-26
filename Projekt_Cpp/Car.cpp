@@ -115,6 +115,8 @@ void Car::updateCar(Controls inputs)
     this->updateSpeedRot(inputs);
     this->updatePosition();
     this->checkCollision();
+    this->UpdateGameState(inputs);
+    this->VisualiseRays();
 
 }
 
@@ -193,10 +195,11 @@ void Car::UpdateRays()
 
 void Car::VisualiseRays()
 {
-    // Punkt startu promieni w świecie gry.
-    // Używam posX/posY, bo kamera też jest centrowana na tej pozycji auta.
-    Vector2 rayStartWorld = { this->posX - this->image.width / 16, this->posY - this->image.height / 16 };
-    // Ten sam punkt przeliczony na ekran.
+    Vector2 rayStartWorld = {
+        this->posX - this->image.width / 16,
+        this->posY - this->image.height / 16
+    };
+
     Vector2 rayStartScreen = {
         rayStartWorld.x - camOffsetX,
         rayStartWorld.y - camOffsetY
@@ -206,59 +209,36 @@ void Car::VisualiseRays()
     {
         Vector2 rayDir = Vector2Normalize(this->Rays[i]);
 
-        float closestDistance = maxRayDistance;
+        float rayDistance = this->currentState.rayDistances[i];
+        int rayType = this->currentState.rayTypes[i];
 
-        for (Blocks* klocek : klocki)
+        Color rayColor;
+
+        if (rayType == -1)
         {
-            float distance = maxRayDistance;
-
-            if (BarrierLine* line = dynamic_cast<BarrierLine*>(klocek))
-            {
-                distance = RayDistance2D(
-                    rayStartWorld,
-                    rayDir,
-                    line->start,
-                    line->end
-                );
-            }
-            else if (pillarBlock* pillar = dynamic_cast<pillarBlock*>(klocek))
-            {
-                distance = RayDistance2DPillar(
-                    rayStartWorld,
-                    rayDir,
-                    pillar
-                );
-            }
-            else if (turnBlock* turn = dynamic_cast<turnBlock*>(klocek))
-            {
-                distance = RayDistance2DTurn(
-                    rayStartWorld,
-                    rayDir,
-                    turn
-                );
-            }
-            else if (TriggerBlock* trigger = dynamic_cast<TriggerBlock*>(klocek))
-            {
-                distance = RayDistance2DTrigger(
-                    rayStartWorld,
-                    rayDir,
-                    trigger
-                );
-            }
-
-            if (distance < closestDistance)
-            {
-                closestDistance = distance;
-            }
+            // Nic nie trafiono
+            rayColor = DARKGRAY;
+            rayDistance = maxRayDistance;
+        }
+        else if (rayType == 0)
+        {
+            // Ściana / pillar / turn
+            rayColor = RED;
+        }
+        else if (rayType == 1)
+        {
+            // Finish
+            rayColor = GREEN;
+        }
+        else
+        {
+            // Awaryjnie, gdyby pojawił się nieznany typ
+            rayColor = YELLOW;
         }
 
-        bool hitSomething = closestDistance < maxRayDistance;
-
-        float drawDistance = hitSomething ? closestDistance : maxRayDistance;
-
         Vector2 rayEndWorld = {
-            rayStartWorld.x + rayDir.x * drawDistance,
-            rayStartWorld.y + rayDir.y * drawDistance
+            rayStartWorld.x + rayDir.x * rayDistance,
+            rayStartWorld.y + rayDir.y * rayDistance
         };
 
         Vector2 rayEndScreen = {
@@ -266,11 +246,11 @@ void Car::VisualiseRays()
             rayEndWorld.y - camOffsetY
         };
 
-        DrawLineEx(rayStartScreen, rayEndScreen, 2.0f, RED);
+        DrawLineEx(rayStartScreen, rayEndScreen, 2.0f, rayColor);
 
-        if (hitSomething)
+        if (rayType != -1)
         {
-            DrawCircleV(rayEndScreen, 5.0f, RED);
+            DrawCircleV(rayEndScreen, 5.0f, rayColor);
         }
     }
 }
