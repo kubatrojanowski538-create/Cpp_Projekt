@@ -12,6 +12,8 @@
 #include <string>
 #include "Util.h"
 #include "GameState.h"
+#include "AIInputBuilder.h"
+#include "NeuralDriver.h"
 using namespace std;
 
 
@@ -116,6 +118,29 @@ int main() {
 
     drawScale = 5;
 
+    ///////////////////
+    
+    bool useAI = false;
+    ////////////////////
+    std::unique_ptr<NeuralDriver> neuralDriver;
+
+    try
+    {
+        neuralDriver = std::make_unique<NeuralDriver>(
+            L"C:\\Users\\Kuba\\Desktop\\cppp\\Cpp_Projekt\\ml python\\driver_model.onnx"
+        );
+    }
+    catch (const Ort::Exception& e)
+    {
+        std::cout << "ONNX Runtime error while loading model:\n";
+        std::cout << e.what() << "\n";
+    }
+    catch (const std::exception& e)
+    {
+        std::cout << "Standard exception while loading model:\n";
+        std::cout << e.what() << "\n";
+    }
+    ///////////////////////////
 
     for (Blocks* klocek : klocki) {
         klocek->scaleBlock();
@@ -145,11 +170,39 @@ int main() {
         }
 
 
-        //car control
-        Controls inputs = GetInputs();
+        //car control/////////////
+        if (IsKeyPressed(KEY_M))
+        {
+            useAI = !useAI;
+
+            if (useAI)
+            {
+                std::cout << "AI driving enabled\n";
+            }
+            else
+            {
+                std::cout << "Player driving enabled\n";
+            }
+        }
+
+        Controls inputs{};
+
+        if (useAI)
+        {
+            inputs = neuralDriver->PredictControls(autko.currentState);
+        }
+        else
+        {
+            inputs = GetInputs();
+        }
+        ///////////////
+
+
 		autko.UpdateGameState(inputs);
+        
+
         if (!gameFinished) {
-            AppendGameStateToFile(autko.currentState, GameStateFileName);
+            //AppendGameStateToFile(autko.currentState, GameStateFileName);
 
         }
         autko.UpdateRays();
