@@ -11,6 +11,7 @@
 #include <fstream>
 #include <string>
 #include "Util.h"
+#include "GameState.h"
 using namespace std;
 
 
@@ -23,7 +24,7 @@ int main() {
         MakeDirectory("tracks");
     }
     
-
+	string GameStateFileName = EnsureGameStateFileExists("GameStatesTable.csv");
     Image EKRAN;
     Color KOLORPIXELA;
     InitWindow(windowWidth, windowHeight, "cpp projekt v2");
@@ -115,6 +116,7 @@ int main() {
 
     drawScale = 5;
 
+
     for (Blocks* klocek : klocki) {
         klocek->scaleBlock();
         if (klocek->getBlockType() == 1) {
@@ -145,8 +147,14 @@ int main() {
 
         //car control
         Controls inputs = GetInputs();
-       
+		autko.UpdateGameState(inputs);
+        if (!gameFinished) {
+            AppendGameStateToFile(autko.currentState, GameStateFileName);
+
+        }
+        autko.UpdateRays();
         autko.updateCar(inputs);
+
         autko.drawCar();
         
 

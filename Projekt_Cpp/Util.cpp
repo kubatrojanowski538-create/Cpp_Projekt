@@ -313,3 +313,5 @@ std::istream& operator>>(std::istream& in, Vector2& Vec)
 {
 	return in >> Vec.x >> Vec.y;
 }
+
+

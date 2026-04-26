@@ -115,7 +115,6 @@ void Car::updateCar(Controls inputs)
     this->updateSpeedRot(inputs);
     this->updatePosition();
     this->checkCollision();
-    this->UpdateGameState(inputs);
     this->VisualiseRays();
 
 }

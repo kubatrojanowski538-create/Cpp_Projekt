@@ -24,9 +24,12 @@ void AppendGameStateToFile(const GameState& state, const std::string& fileName)
 {
 	std::ofstream file(fileName, std::ios::app);
 
-	file << state.speed;
+	if (!file.is_open()) {
+		std::cout << "Nie udalo sie otworzyc pliku do zapisu: " << fileName << "\n";
+		return;
+	}
 
-	
+	file << state.speed;
 
 	for (int i = 0; i < 20; i++) {
 		file << ",";
@@ -34,11 +37,38 @@ void AppendGameStateToFile(const GameState& state, const std::string& fileName)
 		file << ",";
 		file << state.rayTypes[i];
 	}
+
 	file << "," << state.inputs.accelerate;
 	file << "," << state.inputs.brake;
 	file << "," << state.inputs.steerLeft;
 	file << "," << state.inputs.steerRight;
 
 	file << "\n";
+
+	if (file.fail()) {
+		std::cout << "Blad podczas zapisu do pliku: " << fileName << "\n";
+	}
+}
+
+std::string EnsureGameStateFileExists(const std::string& fileName)
+{
+	std::ifstream file(fileName, std::ios::ate);
+
+	bool fileExists = file.good();
+	bool fileIsEmpty = true;
+
+	if (fileExists)
+	{
+		fileIsEmpty = file.tellg() == 0;
+	}
+
+	file.close();
+
+	if (!fileExists || fileIsEmpty)
+	{
+		SaveGameStateHeader(fileName);
+	}
+
+	return fileName;
 }
 

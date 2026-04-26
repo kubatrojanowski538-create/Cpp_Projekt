@@ -8,4 +8,4 @@
 
 void SaveGameStateHeader(const std::string& fileName);
 void AppendGameStateToFile(const GameState& state, const std::string& fileName);
-RayAndType GetClosestRayHit(Vector2 position, Vector2 rayDirection);
+std::string EnsureGameStateFileExists(const std::string& fileName);
