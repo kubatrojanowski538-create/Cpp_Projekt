@@ -1,3 +1,5 @@
+#pragma message("AIInputBuilder.cpp is being compiled")
+
 #include "AIInputBuilder.h"
 
 #include <iostream>

@@ -1,6 +1,6 @@
 ﻿#include "globals.h"
 
-const int windowWidth = 1620;
+const int windowWidth = 1920;
 const int windowHeight = 1080;
 float camOffsetX = 0;
 float camOffsetY = 0;

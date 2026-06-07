@@ -14,6 +14,8 @@
 #include "GameState.h"
 #include "AIInputBuilder.h"
 #include "NeuralDriver.h"
+#include <memory>
+#include <filesystem>
 using namespace std;
 
 
@@ -124,21 +126,42 @@ int main() {
     ////////////////////
     std::unique_ptr<NeuralDriver> neuralDriver;
 
-    try
+    std::wstring modelPath =
+        L"C:\\Users\\Kuba\\Desktop\\prz\\cppp\\Cpp_Projekt\\ml python\\driver_model.onnx";
+
+    std::wcout << L"Trying to load model from:\n";
+    std::wcout << modelPath << L"\n";
+
+    if (!std::filesystem::exists(modelPath))
     {
-        neuralDriver = std::make_unique<NeuralDriver>(
-            L"C:\\Users\\Kuba\\Desktop\\cppp\\Cpp_Projekt\\ml python\\driver_model.onnx"
-        );
+        std::cout << "ERROR: model file does not exist!\n";
     }
-    catch (const Ort::Exception& e)
+    else
     {
-        std::cout << "ONNX Runtime error while loading model:\n";
-        std::cout << e.what() << "\n";
-    }
-    catch (const std::exception& e)
-    {
-        std::cout << "Standard exception while loading model:\n";
-        std::cout << e.what() << "\n";
+        std::cout << "Model file found.\n";
+
+        try
+        {
+            neuralDriver = std::make_unique<NeuralDriver>(modelPath);
+            std::cout << "NeuralDriver loaded successfully.\n";
+        }
+        catch (const Ort::Exception& e)
+        {
+            std::cout << "ONNX Runtime error while loading model:\n";
+            std::cout << e.what() << "\n";
+            neuralDriver.reset();
+        }
+        catch (const std::exception& e)
+        {
+            std::cout << "Standard exception while loading model:\n";
+            std::cout << e.what() << "\n";
+            neuralDriver.reset();
+        }
+        catch (...)
+        {
+            std::cout << "Unknown error while loading model.\n";
+            neuralDriver.reset();
+        }
     }
     ///////////////////////////
 
@@ -174,7 +197,7 @@ int main() {
         if (IsKeyPressed(KEY_M))
         {
             useAI = !useAI;
-
+        
             if (useAI)
             {
                 std::cout << "AI driving enabled\n";

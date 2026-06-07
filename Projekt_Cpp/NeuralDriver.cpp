@@ -90,6 +90,11 @@ Controls NeuralDriver::PredictControls(const GameState& state)
 {
     std::vector<float> probs = PredictProbabilities(state);
 
+    constexpr float ACCELERATE_THRESHOLD = 0.57f;
+    constexpr float BRAKE_THRESHOLD = 0.59f;
+    constexpr float STEER_LEFT_THRESHOLD = 0.575f;
+    constexpr float STEER_RIGHT_THRESHOLD = 0.465f;
+
     float pAccelerate = probs[0];
     float pBrake = probs[1];
     float pSteerLeft = probs[2];
@@ -102,22 +107,35 @@ Controls NeuralDriver::PredictControls(const GameState& state)
     controls.steerRight = 0.0f;
 
     // Gaz / hamulec.
-    // Na razie dajemy próg taki jak testowaliśmy w Pythonie.
-    if (pBrake > 0.50f)
+    // Hamulec ma priorytet, żeby auto nie wciskało gazu i hamulca naraz.
+    if (pBrake > BRAKE_THRESHOLD)
     {
         controls.brake = 1.0f;
     }
-    else if (pAccelerate > 0.30f)
+    else if (pAccelerate > ACCELERATE_THRESHOLD)
     {
         controls.accelerate = 1.0f;
     }
 
     // Skręt.
-    float steeringThreshold = 0.35f;
+    bool wantsLeft = pSteerLeft > STEER_LEFT_THRESHOLD;
+    bool wantsRight = pSteerRight > STEER_RIGHT_THRESHOLD;
 
-    if (pSteerLeft > steeringThreshold || pSteerRight > steeringThreshold)
+    if (wantsLeft || wantsRight)
     {
-        if (pSteerLeft > pSteerRight)
+        if (wantsLeft && wantsRight)
+        {
+            // Gdy oba kierunki przekroczą próg, wybierz pewniejszy.
+            if (pSteerLeft > pSteerRight)
+            {
+                controls.steerLeft = 1.0f;
+            }
+            else
+            {
+                controls.steerRight = 1.0f;
+            }
+        }
+        else if (wantsLeft)
         {
             controls.steerLeft = 1.0f;
         }

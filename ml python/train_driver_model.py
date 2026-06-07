@@ -53,19 +53,18 @@ class DriverNet(nn.Module):
         super().__init__()
 
         self.net = nn.Sequential(
-            nn.Linear(input_size, 128),
-            nn.BatchNorm1d(128),
+            nn.Linear(input_size, 256),
+            nn.BatchNorm1d(256),
             nn.ReLU(),
-            nn.Dropout(0.10),
+            nn.Dropout(0.1),
 
-            nn.Linear(128, 128),
-            nn.ReLU(),
-            nn.Dropout(0.10),
-
-            nn.Linear(128, 64),
+            nn.Linear(256, 64),
             nn.ReLU(),
 
-            nn.Linear(64, 4)
+            nn.Linear(64, 8),
+            nn.ReLU(),
+
+            nn.Linear(8, 4),
         )
 
     def forward(self, x):
@@ -159,15 +158,15 @@ def evaluate(model, loader, loss_fn, device):
 
 
 def train():
-    torch.manual_seed(123)
-    np.random.seed(123)
+    torch.manual_seed(67)
+    np.random.seed(67)
 
     df = load_data()
 
     train_df, val_df = train_test_split(
         df,
         test_size=0.2,
-        random_state=123,
+        random_state=67,
         shuffle=True
     )
 
@@ -182,13 +181,13 @@ def train():
 
     train_loader = DataLoader(
         train_dataset,
-        batch_size=256,
+        batch_size=512,
         shuffle=True
     )
 
     val_loader = DataLoader(
         val_dataset,
-        batch_size=512,
+        batch_size=1024,
         shuffle=False
     )
 
