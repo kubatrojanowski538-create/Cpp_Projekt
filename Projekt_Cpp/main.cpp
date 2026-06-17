@@ -52,6 +52,14 @@ string FileNameWithoutExtension(const string& path) {
     return fileName;
 }
 
+string TrackFilePath(const string& path) {
+    if (path.find_last_of("/\\") != string::npos) {
+        return path;
+    }
+
+    return "tracks/" + path;
+}
+
 vector<TrackOption> GetAvailableTracks() {
     vector<TrackOption> tracks;
     FilePathList files = LoadDirectoryFiles("tracks");
@@ -60,7 +68,7 @@ vector<TrackOption> GetAvailableTracks() {
         string path = files.paths[i];
 
         if (EndsWithTxt(path)) {
-            tracks.push_back({ path, FileNameWithoutExtension(path) });
+            tracks.push_back({ TrackFilePath(path), FileNameWithoutExtension(path) });
         }
     }
 
@@ -179,6 +187,24 @@ void ReturnToTrackSelection(Car& car) {
     camOffsetY = 0;
 }
 
+void RestartCurrentTrack(Car& car) {
+    ResetRaceState(car);
+    car.posX = 0;
+    car.posY = 0;
+
+    for (Blocks* block : klocki) {
+        if (block->getBlockType() == 1) {
+            car.posX = block->posX;
+            car.posY = block->posY;
+            respawnPoint = { block->posX, block->posY };
+            break;
+        }
+    }
+
+    camOffsetX = car.posX - windowWidth / 2;
+    camOffsetY = car.posY - windowHeight / 2;
+}
+
 void DrawTrackSelectionScreen(const vector<TrackOption>& tracks, string& loadError, GameScreen& screen, Car& car) {
     BeginDrawing();
     ClearBackground(backgroundColor);
@@ -264,10 +290,7 @@ void DrawFinishMenu(Car& car, GameScreen& screen) {
     Rectangle trackButton = { windowWidth / 2 - 230.0f, windowHeight / 2 + 60.0f, 460.0f, 60.0f };
 
     if (DrawButton(retryButton, "Jedz ten tor ponownie", 26)) {
-        car.resetCar();
-        gameTime = 0.0f;
-        gameFinished = false;
-        timerRunning = false;
+        RestartCurrentTrack(car);
         screen = GameScreen::Driving;
     }
 
@@ -287,7 +310,7 @@ int main() {
     if (!DirectoryExists("tracks")) {
         MakeDirectory("tracks");
     }
-    
+
 	string GameStateFileName = EnsureGameStateFileExists("GameStatesTable.csv");
     InitWindow(windowWidth, windowHeight, "cpp projekt v2");
     SetTargetFPS(fps);
